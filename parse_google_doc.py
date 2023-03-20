@@ -1,17 +1,48 @@
 import re
+import os
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.errors import HttpError
 
-def parse_google_doc(doc_link, credentials_file, max_words_per_token=2000):
-    # Authenticate with the Google Docs API using a service account
-    creds = service_account.Credentials.from_service_account_file(
-        credentials_file,
-        scopes=['https://www.googleapis.com/auth/documents.readonly']
-    )
-    docs_service = build('docs', 'v1', credentials=creds)
 
-    # Retrieve the Google Doc content
-    document = docs_service.documents().get(documentId=doc_link).execute()
+
+# If modifying these scopes, delete the file token.json.
+SCOPES = ['https://www.googleapis.com/auth/documents.readonly']
+
+def parse_google_doc(doc_link, credentials_file, max_words_per_token=1024):
+    
+    DOCUMENT_ID = doc_link
+    creds = None
+    # The file token.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+    try:
+        service = build('docs', 'v1', credentials=creds)
+        # Retrieve the documents contents from the Docs service.
+        document = service.documents().get(documentId=DOCUMENT_ID).execute()
+
+        print('The title of the document is: {}'.format(document.get('title')))
+        
+    except HttpError as err:
+        print(err)
+        
+
 
     # Extract the text from the Google Doc
     doc_content = document.get('body').get('content')
@@ -29,6 +60,8 @@ def parse_google_doc(doc_link, credentials_file, max_words_per_token=2000):
         split_idx = re.search(r'\W', text[:max_words_per_token][::-1]).start()
         text_tokens.append(text[:max_words_per_token-split_idx].strip())
         text = text[max_words_per_token-split_idx:].strip()
-    text_tokens.append(text.strip())
+        text_tokens.append(text.strip())
+    
+    print(len(text_tokens))
 
     return text_tokens
