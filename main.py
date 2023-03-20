@@ -5,7 +5,7 @@ from summarise_with_gpt import summarise_with_gpt
 doc_link = "https://docs.google.com/document/d/16BOwSn412GhlYEzpBxh_plbRhYXMpMtAGFCsKaWmVDM/edit?usp=sharing"
 
 # Enter the path to your service account credentials JSON file here
-credentials_file = "credentials.json"
+credentials_file = "credentials.json" #rename samplecredentials file
 
 
 def main():
