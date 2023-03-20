@@ -1,4 +1,5 @@
 from parse_google_doc import parse_google_doc
+from summarise_with_gpt import summarise_with_gpt
 
 # Enter the Google Doc link here
 doc_link = "https://docs.google.com/document/d/16BOwSn412GhlYEzpBxh_plbRhYXMpMtAGFCsKaWmVDM/edit?usp=sharing"
@@ -15,7 +16,7 @@ def main():
     for i, token in enumerate(text_tokens):
         print(f"Token {i+1}: {token}")
     
-   
+    summarise_with_gpt(text_tokens)
         
 
 if __name__ == "__main__":
