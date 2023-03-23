@@ -15,7 +15,7 @@ def summarise_with_gpt(text_tokens,openai_api_key):
 
     # Set up the GPT-3.5 API parameters
     model_engine = "gpt-3.5-turbo"
-    max_tokens = 1800 # The maximum number of tokens (words or subwords) in the generated response
+    max_tokens = 800 # The maximum number of tokens (words or subwords) in the generated response
     stop_sequence = None
 
     # Send each text token as a prompt to the GPT-3 API and print the response
@@ -35,13 +35,12 @@ def summarise_with_gpt(text_tokens,openai_api_key):
                         stop=stop_sequence,
                         temperature=0.7,
                     )
+                    summary_response.append(response['choices'][0]['message']['content'])
                     # Some of the responses are empty.
                     # Find the first response from the chatbot that has text in it (some responses may not have text)
-                    for choice in response.choices:
-                        if "text" in choice:
-                            summary_response.append(response.choices[0].text.strip())
-                            # Add the chatbot's response to the conversation history and print it to the console
-                            message_log.append({"role": "assistant", "content": response})
+                    
+                    # Add the chatbot's response to the conversation history and print it to the console
+                    message_log.append({"role": "assistant", "content": response['choices'][0]['message']['content']})
             
             
             except Exception as e:
