@@ -11,11 +11,9 @@ doc_link = os.getenv('DOC_LINK')
 credentials_file = 'credentials.json'
 
 def main():
+    # Call the parse_google_doc() function to retrieve the text tokens
     
-     # Call the parse_google_doc() function to retrieve the text tokens
-    text_tokens = parse_google_doc(doc_link, credentials_file,max_words_per_token=1024)
-    
-    
+    text_tokens = parse_google_doc(doc_link, credentials_file,max_words_per_token=512)
     summary = summarise_with_gpt(text_tokens,openai_api_key)
     
     print (summary)
