@@ -7,7 +7,7 @@ load_dotenv()
 openai_api_key = os.getenv('OPENAI_API_KEY')
 doc_link = os.getenv('DOC_LINK')
 
-# Enter the path to your service account credentials JSON file here
+# Enter the path to your google service account credentials JSON file here
 credentials_file = 'credentials.json'
 
 def main():

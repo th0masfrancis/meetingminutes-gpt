@@ -21,6 +21,7 @@ def summarise_with_gpt(text_tokens,openai_api_key):
     # Send each text token as a prompt to the GPT-3 API and print the response
     summary_response =[]
     for i, token in enumerate(text_tokens):
+        print (i)
         if first_request:
             message_log.append({"role": "user", "content": "Can you summarise following meeting transcript"+ token})
             # Set the flag to False so that this branch is not executed again
